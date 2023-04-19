@@ -1,0 +1,9 @@
+8
+CHBuenoSuarez 4 10 30 50 70
+DMForlanCorazo 3 100 100 100
+FSValverdeDipetta 5 100 90 80 70 60
+GRGermanRamos 3 100 90 75
+RRRodrigoRaimondi 2 80 75
+FGFedericoGutierrez 3 80 90 70
+FRFrancoRamos 8 50 45 76 89 78 76 45 90
+SGSantiagoGonzalez 4 100 90 95 89
