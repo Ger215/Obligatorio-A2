@@ -2,20 +2,6 @@ package tads.bst;
 
 public class AVL<T extends Comparable<T>> implements BST<T> {
 
-  class Node<T> {
-
-    T data;
-    int ocurrencies;
-    Node<T> left = null;
-    Node<T> right = null;
-    int height = 1;
-
-    Node(T data, int ocurrencies) {
-      this.data = data;
-      this.ocurrencies = ocurrencies;
-    }
-  }
-
   private Node<T> root;
   private int elements;
 
@@ -121,36 +107,18 @@ public class AVL<T extends Comparable<T>> implements BST<T> {
     return b;
   }
 
-  public T getDataT() {
-    T data = getDataTAux(this.root.right);
-    if (data != null) {
-      return data;
+  public Node<T> getNode() {
+    return getNodeAux(this.root);
+  }
+
+  private Node<T> getNodeAux(Node<T> node) {
+    Node<T> aux = null;
+    if (node.right != null) {
+      aux = getNodeAux(node.right);
     } else {
-      return getDataTAux(this.root.left);
+      aux = getNodeAux(node.left);
     }
-  }
 
-  private T getDataTAux(Node<T> root) {
-    if (root == null) {
-      return null;
-    }
-    return root.data;
-  }
-
-  @Override
-  public int getOcurrencies() {
-    int o = getOcurrenciesAux(this.root.right);
-    if (o != 0) {
-      return o;
-    } else {
-      return getOcurrenciesAux(this.root.left);
-    }
-  }
-
-  private int getOcurrenciesAux(Node<T> root) {
-    if (root == null) {
-      return 0;
-    }
-    return root.ocurrencies;
+    return aux;
   }
 }

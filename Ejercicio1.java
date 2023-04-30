@@ -1,4 +1,3 @@
-import java.text.Normalizer;
 import java.util.Scanner;
 import tads.hash.CloseHasherMap;
 import tads.hash.Pair;
