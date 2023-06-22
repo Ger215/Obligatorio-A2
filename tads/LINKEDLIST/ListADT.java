@@ -1,21 +1,15 @@
-package tads.LINKEDLIST;
+package tads.linkedlist;
+
+import tads.graph.AdjacencyListGraph.Edge;
 
 public interface ListADT<T> extends Iterable<T> {
-  public T get(int pos);
+  public void add(T o);
 
-  public void pushFront(T o);
+  public void remove(int i);
 
-  public void pushBack(T o);
-
-  public void pushAt(T o, int pos);
-
-  public void deleteAt(int pos);
-
-  public void delete(T o);
+  public Edge get(int i);
 
   public boolean isEmpty();
-
-  public boolean contains(T o);
 
   public int size();
 }

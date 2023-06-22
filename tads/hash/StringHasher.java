@@ -4,20 +4,22 @@ public class StringHasher implements Hasher<String> {
 
   @Override
   public int hash(String data, int size) {
-    int hashValue = 0;
-    for (int i = 0; i < data.length(); i++) {
-      hashValue = 37 * hashValue + data.charAt(i);
+    int h = 0;
+    int length = data.length();
+    if (length >= 10) length = 10;
+    for (int i = 0; i < length; i++) {
+      h = (31 * h * h) + data.charAt(i);
     }
-
-    return hashValue % size;
+    return h % size;
   }
-  /*
-   * public int hash(String data, int size) {
-    int hash = 0;
-    for (int i = 0; i < data.length(); i++) {
-      hash = 31 * hash + data.charAt(i);
+  /*public long hash(String data, int size) {
+    long h = 0;
+    int length = data.length();
+    if (length >= 10) length = 10;
+    for (int i = 0; i < length; i++) {
+      int c = data.charAt(i);
+      h = (h * 131071) ^ c;
     }
-    return hash % size;
-  }
-   */
+    return h % size;
+  } */
 }

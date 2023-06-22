@@ -10,10 +10,11 @@ public class Ejercicio1 {
     int students = sc.nextInt();
     String[] studNames = new String[students];
     StringHasher hash = new StringHasher();
-    CloseHasherMap CloseTable = new CloseHasherMap<String, Integer>(
+    CloseHasherMap<String, Integer> CloseTable = new CloseHasherMap<String, Integer>(
       students,
       hash
     );
+    int cont = 0;
     while (sc.hasNextLine()) {
       sc.nextLine();
       while (sc.hasNextLine()) {
@@ -30,16 +31,11 @@ public class Ejercicio1 {
 
         int prom = sum / grades;
 
-        String name = data[0];
-        boolean finish = false;
-        for (int i = 0; i < students && !finish; i++) {
-          if (studNames[i] == null) {
-            studNames[i] = name;
-            finish = true;
-          }
-        }
+        studNames[cont] = data[0];
 
         CloseTable.insert(data[0], prom);
+
+        cont++;
       }
     }
 
