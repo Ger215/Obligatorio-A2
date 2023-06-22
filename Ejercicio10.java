@@ -7,21 +7,21 @@ public class Ejercicio10 {
     int n = sc.nextInt();
     int p = sc.nextInt();
     int[][] mat = new int[n][p];
-    boolean[][] visitadosBedelia = new boolean[n][p];
+    boolean[][] visited = new boolean[n][p];
     int bedX = 0;
     int bedY = 0;
     sc.nextLine();
     for (int i = 0; i < n; i++) {
-      String dato = sc.nextLine();
-      String[] datos = dato.split(" ");
-      for (int j = 0; j < datos.length; j++) {
-        if (datos[j].equals("P")) {
+      String line = sc.nextLine();
+      String[] data = line.split(" ");
+      for (int j = 0; j < data.length; j++) {
+        if (data[j].equals("P")) {
           mat[i][j] = 0;
-          visitadosBedelia[i][j] = true;
+          visited[i][j] = true;
         } else {
           mat[i][j] = 1;
-          visitadosBedelia[i][j] = false;
-          if (datos[j].equals("B")) {
+          visited[i][j] = false;
+          if (data[j].equals("B")) {
             bedX = i;
             bedY = j;
           }
@@ -29,52 +29,52 @@ public class Ejercicio10 {
       }
     }
 
-    int CuantosAProbar = sc.nextInt();
+    int testCases = sc.nextInt();
     sc.nextLine();
-    for (int i = 0; i < CuantosAProbar; i++) {
-      String dato = sc.nextLine();
-      String[] datos = dato.split(" ");
-      int OrigenX = Integer.parseInt(datos[0]);
-      int OrigenY = Integer.parseInt(datos[1]);
-      int DestinoX = Integer.parseInt(datos[2]);
-      int DestinoY = Integer.parseInt(datos[3]);
+    for (int i = 0; i < testCases; i++) {
+      String line = sc.nextLine();
+      String[] data = line.split(" ");
+      int originX = Integer.parseInt(data[0]);
+      int originY = Integer.parseInt(data[1]);
+      int endX = Integer.parseInt(data[2]);
+      int endY = Integer.parseInt(data[3]);
       if (
-        EncontrarCaminoOptimo(
-          OrigenY - 1,
-          OrigenX - 1,
+        findOptimalPath(
+          originY - 1,
+          originX - 1,
           bedX,
           bedY,
-          DestinoY - 1,
-          DestinoX - 1,
+          endY - 1,
+          endX - 1,
           mat,
-          visitadosBedelia
+          visited
         ) !=
         0
       ) {
         System.out.println(
-          EncontrarCaminoOptimo(
-            OrigenY - 1,
-            OrigenX - 1,
+          findOptimalPath(
+            originY - 1,
+            originX - 1,
             bedX,
             bedY,
-            DestinoY - 1,
-            DestinoX - 1,
+            endY - 1,
+            endX - 1,
             mat,
-            visitadosBedelia
+            visited
           ) +
           1
         );
       } else {
         System.out.println(
-          EncontrarCaminoOptimo(
-            OrigenY - 1,
-            OrigenX - 1,
+          findOptimalPath(
+            originY - 1,
+            originX - 1,
             bedX,
             bedY,
-            DestinoY - 1,
-            DestinoX - 1,
+            endY - 1,
+            endX - 1,
             mat,
-            visitadosBedelia
+            visited
           )
         );
       }
@@ -82,122 +82,122 @@ public class Ejercicio10 {
     sc.close();
   }
 
-  static int EncontrarCaminoOptimo(
-    int OrigenX,
-    int OrigenY,
+  static int findOptimalPath(
+    int originX,
+    int originY,
     int bedX,
     int bedY,
-    int DestinoX,
-    int DestinoY,
+    int endX,
+    int endY,
     int[][] mat,
-    boolean[][] visitados
+    boolean[][] visitedPath
   ) {
     int n = mat.length;
     int p = mat[0].length;
 
-    int[] movimientoX = { -1, 0, 1, 0 };
-    int[] movimientosY = { 0, 1, 0, -1 };
+    int[] possibleMovesX = { -1, 0, 1, 0 };
+    int[] possibleMovesY = { 0, 1, 0, -1 };
 
     boolean[][] aux = new boolean[n][p];
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < p; j++) {
-        aux[i][j] = visitados[i][j];
+        aux[i][j] = visitedPath[i][j];
       }
     }
 
-    aux[OrigenX][OrigenY] = true;
+    aux[originX][originY] = true;
 
-    int[][] distancia = new int[n][p];
-    distancia[OrigenX][OrigenY] = 0;
+    int[][] distance = new int[n][p];
+    distance[originX][originY] = 0;
 
-    int x = OrigenX;
-    int y = OrigenY;
-    int OriginalX = OrigenX;
-    int OriginalY = OrigenY;
+    int x = originX;
+    int y = originY;
+    int originalX = originX;
+    int originalY = originY;
 
-    int anteriorX = OrigenX;
-    int anteriorY = OrigenY;
+    int previousX = originX;
+    int previousY = originY;
     int cont = 0;
-    int[] hecho = new int[8 + 1];
+    int[] done = new int[8 + 1];
 
-    boolean termino = false;
-    int DistanciaABed = Integer.MAX_VALUE;
-    while (termino != true) {
-      if (LLegoABedelia(x, y, bedX, bedY) == true) {
+    boolean finished = false;
+    int distanceToEnd = Integer.MAX_VALUE;
+    while (finished != true) {
+      if (reachedEnd(x, y, bedX, bedY) == true) {
         for (int i = 0; i < n; i++) {
           for (int j = 0; j < p; j++) {
-            aux[i][j] = visitados[i][j];
+            aux[i][j] = visitedPath[i][j];
           }
         }
-        if (distancia[bedX][bedY] < DistanciaABed) {
-          DistanciaABed = distancia[bedX][bedY];
+        if (distance[bedX][bedY] < distanceToEnd) {
+          distanceToEnd = distance[bedX][bedY];
         }
 
-        for (int k = 1; k < hecho.length; k += 2) {
-          aux[hecho[k]][hecho[k + 1]] = true;
+        for (int k = 1; k < done.length; k += 2) {
+          aux[done[k]][done[k + 1]] = true;
         }
 
-        OrigenX = OriginalX;
-        OrigenY = OriginalY;
+        originX = originalX;
+        originY = originalY;
 
-        boolean Hecho = false;
-        for (int i = 0; i < 4 && Hecho != true; i++) {
-          int MovidoX = OriginalX + movimientoX[i];
-          int MovidoY = OriginalY + movimientosY[i];
+        boolean flag = false;
+        for (int i = 0; i < 4 && flag != true; i++) {
+          int moveX = originalX + possibleMovesX[i];
+          int moveY = originalY + possibleMovesY[i];
 
           if (
-            esValido(MovidoX, MovidoY, n, p) &&
-            NoEsPared(mat, MovidoX, MovidoY) &&
-            FueVisitado(aux, MovidoX, MovidoY)
+            isValid(moveX, moveY, n, p) &&
+            notWall(mat, moveX, moveY) &&
+            wasVisited(aux, moveX, moveY)
           ) {
-            termino = false;
-            Hecho = true;
+            finished = false;
+            flag = true;
             cont = 0;
-            x = OriginalX;
-            y = OriginalY;
-            for (int k = 0; k < distancia.length; k++) {
-              for (int r = 0; r < distancia[0].length; r++) {
-                distancia[k][r] = 0;
+            x = originalX;
+            y = originalY;
+            for (int k = 0; k < distance.length; k++) {
+              for (int r = 0; r < distance[0].length; r++) {
+                distance[k][r] = 0;
               }
             }
           } else {
-            termino = true;
+            finished = true;
           }
         }
       }
 
-      int minDistancia = Integer.MAX_VALUE;
+      int minDistance = Integer.MAX_VALUE;
       int actualX = x;
       int actualY = y;
-      int MovimientoHecho = Integer.MIN_VALUE;
-      boolean hechoMovimiento = false;
+      int moveDone = Integer.MIN_VALUE;
+      boolean hasMoved = false;
 
       for (int i = 0; i < 4; i++) {
-        int MovidoX = x + movimientoX[i];
-        int MovidoY = y + movimientosY[i];
+        int movedX = x + possibleMovesX[i];
+        int movedY = y + possibleMovesY[i];
 
         if (
-          esValido(MovidoX, MovidoY, n, p) &&
-          NoEsPared(mat, MovidoX, MovidoY) &&
-          FueVisitado(aux, MovidoX, MovidoY)
+          isValid(movedX, movedY, n, p) &&
+          notWall(mat, movedX, movedY) &&
+          wasVisited(aux, movedX, movedY)
         ) {
-          if (distancia[MovidoX][MovidoY] < minDistancia) {
-            minDistancia = distancia[MovidoX][MovidoY];
-            actualX = MovidoX;
-            actualY = MovidoY;
-            MovimientoHecho = i;
-            hechoMovimiento = true;
-            if (x == OrigenX && y == OrigenY) {
-              anteriorX = actualX;
-              anteriorY = actualY;
+          if (distance[movedX][movedY] < minDistance) {
+            minDistance = distance[movedX][movedY];
+            actualX = movedX;
+            actualY = movedY;
+            moveDone = i;
+            hasMoved = true;
+            if (x == originX && y == originY) {
+              previousX = actualX;
+              previousY = actualY;
             }
             if (cont == 0) {
-              int listo = 0;
-              for (int k = 1; k < hecho.length && listo != 2; k += 2) {
-                if (hecho[k] == 0) {
-                  hecho[k] = actualX;
-                  hecho[k + 1] = actualY;
-                  listo = 2;
+              int stop = 0;
+              for (int k = 1; k < done.length && stop != 2; k += 2) {
+                if (done[k] == 0) {
+                  done[k] = actualX;
+                  done[k + 1] = actualY;
+                  stop = 2;
                 }
               }
               cont++;
@@ -206,21 +206,20 @@ public class Ejercicio10 {
         }
       }
 
-      if (hechoMovimiento) {
+      if (hasMoved) {
         x = actualX;
         y = actualY;
         aux[x][y] = true;
-        distancia[x][y] =
-          distancia[x - movimientoX[MovimientoHecho]][y -
-            movimientosY[MovimientoHecho]] +
+        distance[x][y] =
+          distance[x - possibleMovesX[moveDone]][y - possibleMovesY[moveDone]] +
           1;
       } else {
-        x = OrigenX;
-        y = OrigenY;
-        OrigenX = anteriorX;
-        OrigenY = anteriorY;
-        for (int k = 1; k < hecho.length; k += 2) {
-          aux[hecho[k]][hecho[k + 1]] = false;
+        x = originX;
+        y = originY;
+        originX = previousX;
+        originY = previousY;
+        for (int k = 1; k < done.length; k += 2) {
+          aux[done[k]][done[k + 1]] = false;
         }
       }
     }
@@ -228,7 +227,7 @@ public class Ejercicio10 {
     boolean[][] aux2 = new boolean[n][p];
     for (int i = 0; i < n; i++) {
       for (int j = 0; j < p; j++) {
-        aux2[i][j] = visitados[i][j];
+        aux2[i][j] = visitedPath[i][j];
       }
     }
 
@@ -239,58 +238,58 @@ public class Ejercicio10 {
     int anteriorX2 = bedX;
     int anteriorY2 = bedY;
 
-    distancia[bedX][bedY] = DistanciaABed;
+    distance[bedX][bedY] = distanceToEnd;
 
     int BedeliaX = bedX;
     int BedeliaY = bedY;
-    int DistanciaADestino = Integer.MAX_VALUE;
+    int distanceToFinish = Integer.MAX_VALUE;
     int cont2 = 0;
-    int[] hecho2 = new int[8 + 1];
-    int[][] distancia2 = new int[n][p];
+    int[] doneAux = new int[8 + 1];
+    int[][] distanceAux = new int[n][p];
 
-    termino = false;
-    while (termino != true) {
-      if (LLegoADestino(x, y, DestinoX, DestinoY) == true) {
+    finished = false;
+    while (finished != true) {
+      if (reachedDestination(x, y, endX, endY) == true) {
         for (int i = 0; i < n; i++) {
           for (int j = 0; j < p; j++) {
-            aux2[i][j] = visitados[i][j];
+            aux2[i][j] = visitedPath[i][j];
           }
         }
 
-        if (distancia2[DestinoX][DestinoY] < DistanciaADestino) {
-          DistanciaADestino = distancia2[DestinoX][DestinoY];
+        if (distanceAux[endX][endY] < distanceToFinish) {
+          distanceToFinish = distanceAux[endX][endY];
         }
 
-        for (int k = 1; k < hecho.length; k += 2) {
-          aux2[hecho2[k]][hecho2[k + 1]] = true;
+        for (int k = 1; k < done.length; k += 2) {
+          aux2[doneAux[k]][doneAux[k + 1]] = true;
         }
 
         aux2[BedeliaX][BedeliaY] = true;
         bedX = BedeliaX;
         bedY = BedeliaY;
 
-        boolean Hecho = false;
-        for (int i = 0; i < 4 && Hecho != true; i++) {
-          int MovidoX = BedeliaX + movimientoX[i];
-          int MovidoY = BedeliaY + movimientosY[i];
+        boolean stopped = false;
+        for (int i = 0; i < 4 && stopped != true; i++) {
+          int MovidoX = BedeliaX + possibleMovesX[i];
+          int MovidoY = BedeliaY + possibleMovesY[i];
 
           if (
-            esValido(MovidoX, MovidoY, n, p) &&
-            NoEsPared(mat, MovidoX, MovidoY) &&
-            FueVisitado(aux2, MovidoX, MovidoY)
+            isValid(MovidoX, MovidoY, n, p) &&
+            notWall(mat, MovidoX, MovidoY) &&
+            wasVisited(aux2, MovidoX, MovidoY)
           ) {
-            termino = false;
-            Hecho = true;
+            finished = false;
+            stopped = true;
             cont2 = 0;
             x = BedeliaX;
             y = BedeliaY;
-            for (int k = 0; k < distancia2.length; k++) {
-              for (int r = 0; r < distancia2[0].length; r++) {
-                distancia2[k][r] = 0;
+            for (int k = 0; k < distanceAux.length; k++) {
+              for (int r = 0; r < distanceAux[0].length; r++) {
+                distanceAux[k][r] = 0;
               }
             }
           } else {
-            termino = true;
+            finished = true;
           }
         }
       }
@@ -302,16 +301,16 @@ public class Ejercicio10 {
       boolean hechoMovimiento = false;
 
       for (int i = 0; i < 4; i++) {
-        int MovidoX = x + movimientoX[i];
-        int MovidoY = y + movimientosY[i];
+        int MovidoX = x + possibleMovesX[i];
+        int MovidoY = y + possibleMovesY[i];
 
         if (
-          esValido(MovidoX, MovidoY, n, p) &&
-          NoEsPared(mat, MovidoX, MovidoY) &&
-          FueVisitado(aux2, MovidoX, MovidoY)
+          isValid(MovidoX, MovidoY, n, p) &&
+          notWall(mat, MovidoX, MovidoY) &&
+          wasVisited(aux2, MovidoX, MovidoY)
         ) {
-          if (distancia2[MovidoX][MovidoY] < minDistancia) {
-            minDistancia = distancia2[MovidoX][MovidoY];
+          if (distanceAux[MovidoX][MovidoY] < minDistancia) {
+            minDistancia = distanceAux[MovidoX][MovidoY];
             actualX = MovidoX;
             actualY = MovidoY;
             MovimientoHecho = i;
@@ -322,10 +321,10 @@ public class Ejercicio10 {
             }
             if (cont2 == 0) {
               int listo = 0;
-              for (int k = 1; k < hecho.length && listo != 2; k += 2) {
-                if (hecho2[k] == 0) {
-                  hecho2[k] = actualX;
-                  hecho2[k + 1] = actualY;
+              for (int k = 1; k < done.length && listo != 2; k += 2) {
+                if (doneAux[k] == 0) {
+                  doneAux[k] = actualX;
+                  doneAux[k + 1] = actualY;
                   listo = 2;
                 }
               }
@@ -335,7 +334,7 @@ public class Ejercicio10 {
         }
       }
 
-      if (Full(aux2) && DistanciaADestino == Integer.MAX_VALUE) {
+      if (isFull(aux2) && distanceToFinish == Integer.MAX_VALUE) {
         return 0;
       }
 
@@ -343,13 +342,13 @@ public class Ejercicio10 {
         x = actualX;
         y = actualY;
         aux2[x][y] = true;
-        distancia2[x][y] =
-          distancia2[x - movimientoX[MovimientoHecho]][y -
-            movimientosY[MovimientoHecho]] +
+        distanceAux[x][y] =
+          distanceAux[x - possibleMovesX[MovimientoHecho]][y -
+            possibleMovesY[MovimientoHecho]] +
           1;
       } else {
         if (x == bedX && y == bedY) {
-          termino = true;
+          finished = true;
         }
         x = anteriorX2;
         y = anteriorY2;
@@ -358,48 +357,48 @@ public class Ejercicio10 {
       }
     }
 
-    return DistanciaABed + DistanciaADestino;
+    return distanceToEnd + distanceToFinish;
   }
 
-  static boolean esValido(int x, int y, int m, int n) {
+  static boolean isValid(int x, int y, int m, int n) {
     return x >= 0 && x < m && y >= 0 && y < n;
   }
 
-  static boolean NoEsPared(int[][] mat, int i, int j) {
+  static boolean notWall(int[][] mat, int i, int j) {
     return mat[i][j] != 0;
   }
 
-  static boolean FueVisitado(boolean[][] visitado, int i, int j) {
+  static boolean wasVisited(boolean[][] visitado, int i, int j) {
     return visitado[i][j] != true;
   }
 
-  static boolean LLegoADestino(int x, int y, int DestinoX, int DestinoY) {
-    return x == DestinoX && y == DestinoY;
+  static boolean reachedDestination(int x, int y, int endX, int endY) {
+    return x == endX && y == endY;
   }
 
-  static boolean LLegoABedelia(int x, int y, int bedX, int bedY) {
+  static boolean reachedEnd(int x, int y, int bedX, int bedY) {
     return x == bedX && y == bedY;
   }
 
-  static boolean Full(boolean[][] visitados) {
+  static boolean isFull(boolean[][] visitedPath) {
     int cont = 0;
 
-    for (int i = 0; i < visitados.length; i++) {
-      for (int j = 0; j < visitados[0].length; j++) {
-        if (visitados[i][j]) {
+    for (int i = 0; i < visitedPath.length; i++) {
+      for (int j = 0; j < visitedPath[0].length; j++) {
+        if (visitedPath[i][j]) {
           cont++;
         } else {
-          if (estaEncerradaLaClase(visitados, i, j)) {
+          if (invalidPath(visitedPath, i, j)) {
             cont++;
           }
         }
       }
     }
 
-    return cont == (visitados.length * visitados[0].length);
+    return cont == (visitedPath.length * visitedPath[0].length);
   }
 
-  static boolean estaEncerradaLaClase(boolean[][] mat, int i, int j) {
+  static boolean invalidPath(boolean[][] mat, int i, int j) {
     int n = mat.length;
     int p = mat[0].length;
 
@@ -407,15 +406,15 @@ public class Ejercicio10 {
     int[] dy = { 0, 1, 0, -1 };
 
     for (int k = 0; k < 4; k++) {
-      int MovidoX = i + dx[k];
-      int MovidoY = j + dy[k];
+      int moveX = i + dx[k];
+      int moveY = j + dy[k];
 
       if (
-        MovidoX >= 0 &&
-        MovidoX < n &&
-        MovidoY >= 0 &&
-        MovidoY < p &&
-        mat[MovidoX][MovidoY] != true
+        moveX >= 0 &&
+        moveX < n &&
+        moveY >= 0 &&
+        moveY < p &&
+        mat[moveX][moveY] != true
       ) {
         return false;
       }
